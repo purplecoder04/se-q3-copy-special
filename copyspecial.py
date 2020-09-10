@@ -7,7 +7,7 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 
 # give credits
-__author__ = "Erica Best"
+__author__ = "Erica Best,jt and study group "
 
 import re
 import os
