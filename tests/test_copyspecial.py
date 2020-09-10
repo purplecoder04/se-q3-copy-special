@@ -116,12 +116,12 @@ class TestCopyspecial(unittest.TestCase):
         # directory if it does not yet exist.
         # Call the test module's copy_to() function
         dest_dir = "/tmp/kenzie-copyto"
-        shutil.rmtree(dest_dir, ignore_errors=True)
+        self.clean(dest_dir)
         self.module.copy_to(self.rfs.abs_file_list, dest_dir + "/dest")
         # check if dest_dir was created and all files got copied
         a = sorted(os.listdir(dest_dir + "/dest"))
         b = sorted(self.rfs.file_list)
-        shutil.rmtree(dest_dir, ignore_errors=True)
+        self.clean(dest_dir)
         self.assertEqual(a, b, "The copy_to function is not working")
 
     def test_zip_to_1(self):
@@ -152,18 +152,24 @@ class TestCopyspecial(unittest.TestCase):
         """Check if main() function performs a copy_to operation"""
         to_dir = "/tmp/kenzie-copyspl-copyto"
         args = ["--todir", to_dir, self.rfs.tmp_dir]
-        shutil.rmtree(to_dir, ignore_errors=True)
+
+        # cleanup destination before running test
+        self.clean(to_dir)
+
         self.module.main(args)
         expected = list(filter(SPL_REGEX.search, os.listdir(to_dir)))
         self.assertListEqual(
             os.listdir(to_dir), expected,
             "The copy_to() function is not being called from main()")
-        shutil.rmtree(to_dir, ignore_errors=True)
+
+        # cleanup destination after running test
+        self.clean(to_dir)
 
     @staticmethod
     def clean(filepath):
         try:
-            os.remove(filepath)
+            shutil.rmtree(filepath, ignore_errors=True)  # remove as dir
+            os.remove(filepath)  # remove as file
         except OSError:
             pass
 
